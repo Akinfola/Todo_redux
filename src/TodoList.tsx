@@ -1,59 +1,26 @@
 // src/components/TodoList.tsx
-import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "./store";
-import { toggleTodo, deleteTodo } from "./store";
-import {
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
-  Checkbox,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { useSelector } from "react-redux";
+import { RootState } from "./store";
+import { List } from "@mui/material";
+import TodoItem from "./TodoItem";
 
-const TodoList = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const todos = useSelector((state: RootState) => state.todos);
-  const filter = useSelector((state: RootState) => state.filter);
+export default function TodoList() {
+  const todos = useSelector((state: RootState) => state.todoApp.todos);
+  const filter = useSelector((state: RootState) => state.todoApp.filter);
 
-  // Apply filter
   const filteredTodos = todos.filter((todo) => {
     if (filter === "ACTIVE") return !todo.completed;
     if (filter === "COMPLETED") return todo.completed;
-    return true; // ALL
+    return true;
   });
 
   return (
     <List>
-      {filteredTodos.map((todo) => (
-        <ListItem
-          key={todo.id}
-          secondaryAction={
-            <IconButton
-              edge="end"
-              color="error"
-              onClick={() => dispatch(deleteTodo(todo.id))}
-            >
-              <DeleteIcon />
-            </IconButton>
-          }
-        >
-          <Checkbox
-            edge="start"
-            checked={todo.completed}
-            onChange={() => dispatch(toggleTodo(todo.id))}
-          />
-          <ListItemText
-            primary={todo.text}
-            sx={{
-              textDecoration: todo.completed ? "line-through" : "none",
-              color: todo.completed ? "gray" : "inherit",
-            }}
-          />
-        </ListItem>
-      ))}
+      {filteredTodos.length === 0 ? (
+        <p style={{ textAlign: "center" }}>No todos to display</p>
+      ) : (
+        filteredTodos.map((todo) => <TodoItem key={todo.id} {...todo} />)
+      )}
     </List>
   );
-};
-
-export default TodoList;
+}

@@ -4,16 +4,13 @@ import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import App from "./App";
-import CustomThemeProvider from "./ThemeProvider";
-import CssBaseline from "@mui/material/CssBaseline";
+import { CssBaseline } from "@mui/material";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
-      <CustomThemeProvider>
-        <CssBaseline />
-        <App />
-      </CustomThemeProvider>
+      <CssBaseline /> {/* Ensures consistent Material UI baseline styling */}
+      <App />
     </Provider>
   </React.StrictMode>
 );

@@ -1,26 +1,43 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addTodo } from './store';
+// src/components/TodoInput.tsx
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addTodo, AppDispatch } from "./store";
+import { Box, TextField, Button, useTheme } from "@mui/material";
 
 export default function TodoInput() {
-  const [text, setText] = useState('');
-  const dispatch = useDispatch();
+  const [text, setText] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
+  const theme = useTheme(); // get current theme
 
   const handleAdd = () => {
-    if (text.trim() === '') return;
+    if (text.trim() === "") return;
     dispatch(addTodo(text.trim()));
-    setText('');
+    setText("");
   };
 
   return (
-    <div style={{ marginBottom: 12 }}>
-      <input
+    <Box display="flex" mb={2}>
+      <TextField
         value={text}
-        onChange={e => setText(e.target.value)}
+        onChange={(e) => setText(e.target.value)}
         placeholder="Add todo..."
-        style={{ padding: '6px 8px', marginRight: 8 }}
+        variant="outlined"
+        size="small"
+        fullWidth
+        onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+        sx={{
+          input: { color: theme.palette.text.primary },
+          bgcolor: theme.palette.background.default,
+          borderRadius: 1,
+        }}
       />
-      <button onClick={handleAdd}>Add</button>
-    </div>
+      <Button
+        variant="contained"
+        onClick={handleAdd}
+        sx={{ ml: 1 }}
+      >
+        Add
+      </Button>
+    </Box>
   );
 }

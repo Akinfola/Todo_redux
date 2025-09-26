@@ -1,8 +1,8 @@
 // src/components/TodoItem.tsx
-import { ListItem, Checkbox, IconButton, ListItemText } from "@mui/material";
+import { ListItem, Checkbox, IconButton, ListItemText, useTheme } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch } from "react-redux";
-import { toggleTodo, deleteTodo } from "./store";
+import { toggleTodo, deleteTodo, AppDispatch } from "./store";
 
 interface TodoItemProps {
   id: number;
@@ -10,16 +10,28 @@ interface TodoItemProps {
   completed: boolean;
 }
 
-const TodoItem = ({ id, text, completed }: TodoItemProps) => {
-  const dispatch = useDispatch();
+export default function TodoItem({ id, text, completed }: TodoItemProps) {
+  const dispatch = useDispatch<AppDispatch>();
+  const theme = useTheme();
 
   return (
     <ListItem
       secondaryAction={
-        <IconButton edge="end" onClick={() => dispatch(deleteTodo(id))}>
+        <IconButton
+          edge="end"
+          aria-label={`Delete ${text}`}
+          color="error"
+          onClick={() => dispatch(deleteTodo(id))}
+        >
           <DeleteIcon />
         </IconButton>
       }
+      sx={{
+        bgcolor: theme.palette.background.default,
+        color: theme.palette.text.primary,
+        mb: 0.5,
+        borderRadius: 1,
+      }}
     >
       <Checkbox
         checked={completed}
@@ -27,13 +39,11 @@ const TodoItem = ({ id, text, completed }: TodoItemProps) => {
       />
       <ListItemText
         primary={text}
-        style={{
+        sx={{
           textDecoration: completed ? "line-through" : "none",
-          opacity: completed ? 0.6 : 1,
+          color: completed ? theme.palette.text.disabled : theme.palette.text.primary,
         }}
       />
     </ListItem>
   );
-};
-
-export default TodoItem;
+}

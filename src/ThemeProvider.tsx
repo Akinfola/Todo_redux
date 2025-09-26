@@ -1,25 +1,18 @@
 // src/ThemeProvider.tsx
-import React, { createContext, useMemo, useState, ReactNode } from "react";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+import React, { useMemo, useState, ReactNode } from "react";
+import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import { ColorModeContext } from "./ColorModeContext";
 
-// Define the shape of our context
-interface ColorModeContextType {
-  toggleColorMode: () => void;
+interface CustomThemeProviderProps {
+  children: ReactNode;
 }
 
-// Create the context with a default value
-export const ColorModeContext = createContext<ColorModeContextType>({
-  toggleColorMode: () => {},
-});
-
-export default function CustomThemeProvider({ children }: { children: ReactNode }) {
+export default function CustomThemeProvider({ children }: CustomThemeProviderProps) {
   const [mode, setMode] = useState<"light" | "dark">("light");
 
   const colorMode = useMemo(
     () => ({
-      toggleColorMode: () => {
-        setMode((prev) => (prev === "light" ? "dark" : "light"));
-      },
+      toggleColorMode: () => setMode((prev) => (prev === "light" ? "dark" : "light")),
     }),
     []
   );
@@ -34,7 +27,10 @@ export default function CustomThemeProvider({ children }: { children: ReactNode 
 
   return (
     <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {children}
+      </ThemeProvider>
     </ColorModeContext.Provider>
   );
 }
